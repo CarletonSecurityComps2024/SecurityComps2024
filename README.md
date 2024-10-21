@@ -13,7 +13,7 @@ node server.js
 ### Step 2: Run Front End
 
 ```bash
-cd TargetMachine
+cd TargetMachine/frontend
 npm install
 npm run dev
 ```
