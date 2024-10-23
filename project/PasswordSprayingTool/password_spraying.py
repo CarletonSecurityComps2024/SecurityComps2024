@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import random
 import time
 import threading
+import rotating_free_proxies
 
 # Lock for synchronized output
 print_lock = threading.Lock()
@@ -38,7 +39,10 @@ def read_proxies(file_path):
             
             # Add to the proxies list based on protocol
             if protocol == "HTTP":
-                proxies_list.append({"http": f"http://{ip_port}", "https": f"http://{ip_port}"})
+                proxies_list.append({"http": f"http://{ip_port}"
+                                    #  , "https": f"http://{ip_port}"
+                                    }
+                                     )
     return proxies_list
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,10 +66,15 @@ def attempt_login(username, password, max_retries=3):
     while retries < max_retries:
         # Get a random proxy for each attempt
         proxy = get_random_proxy()
+
+        proxy = {
+            "http": "http://176.99.2.43:1081",
+            "https": "http://176.99.2.43:1081",
+        }
         
         try:
             # Adding a timeout of 10 seconds for the request
-            response = requests.post("http://localhost:5050/login", json=data, proxies=proxy, timeout=10)
+            response = requests.post(url, json=data, proxies=proxy, timeout=10)
 
             # Lock the print statements to avoid race conditions
             with print_lock:
