@@ -23,6 +23,7 @@ app.post('/login', (req, res) => {
     console.log(`Status 401: Invalid Credentials`)
     res.status(401).json({ message: 'Invalid Credentials' });
   }
+  console.log(res.statusCode);
 });
 
 // Start the server

