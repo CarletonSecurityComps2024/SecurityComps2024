@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 
 url = 'http://50.19.17.226:5050/login'
-BATCH_SIZE = 3000  # Number of requests per batch
+BATCH_SIZE = 1  # Number of requests per batch
 
 # Function to send a login request
 async def send_login_request(session):
