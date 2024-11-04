@@ -10,7 +10,7 @@ const Login: React.FC = () => {
 
     try {
       // Send a POST request to the backend server
-      const response = await fetch('http://localhost:5050/login', {
+      const response = await fetch('http://34.224.51.201:5050/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,6 +19,7 @@ const Login: React.FC = () => {
       });
 
       const data = await response.json();
+      console.log("Data: ", data);
 
       if (response.status === 200) {
         setLoginMessage('Login Success!');

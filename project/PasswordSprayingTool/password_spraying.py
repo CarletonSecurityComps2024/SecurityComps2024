@@ -177,6 +177,7 @@ def rotating_proxy(username, password):
 def password_spray(usernames, passwords):
     # Using ThreadPoolExecutor to manage a pool of threads
     with ThreadPoolExecutor(max_workers=10) as executor:
+    # with ThreadPoolExecutor(max_workers=1) as executor:
         # Iterate through each username and try each password
         for username in usernames:
             for password in passwords:
