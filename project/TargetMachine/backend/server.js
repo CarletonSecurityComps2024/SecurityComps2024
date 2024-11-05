@@ -9,12 +9,12 @@ const fs = require('fs');
 
 const app = express();
 
+// CORS to connect with frontend
+app.use(cors())
+
 // Middleware to parse req bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// Serve static files from the React app (the client build folder)
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 const VALID_USERNAME = 'admin';
 const VALID_PASSWORD = 'password;'
@@ -22,24 +22,24 @@ const PORT = 5050;
 const IPCounts = {}
 
 const handleNewIP = async (ip, res) => {
-    	if (IPCounts[ip]) {
-        	if (IPCounts[ip] > 25) {
-	    		try {
-            			await db.query(
-                    		'INSERT INTO blocked_ips (ip_address) VALUES ($1) ON CONFLICT (ip_address) DO NOTHING',
-                    		[ip]
-            		);
-            		console.log(`IP Address ${ip} has been added to the blocked_ips table.`);
-            		} catch (error) {
-            			console.error('Error adding IP to blocked_ips:', error);
-            			return res.status(500).json({ message: 'Internal Server Error' });
-            		}	
+	if (IPCounts[ip]) {
+		if (IPCounts[ip] > 25) {
+			try {
+				await db.query(
+					'INSERT INTO blocked_ips (ip_address) VALUES ($1) ON CONFLICT (ip_address) DO NOTHING',
+					[ip]
+				);
+				console.log(`IP Address ${ip} has been added to the blocked_ips table.`);
+			} catch (error) {
+				console.error('Error adding IP to blocked_ips:', error);
+				return res.status(500).json({ message: 'Internal Server Error' });
+			}	
 		} else {
-	    		IPCounts[ip] += 1;
+			IPCounts[ip] += 1;
 		}
-    	} else {
-        	IPCounts[ip] = 1;
-    	}
+	} else {
+		IPCounts[ip] = 1;
+	}
 }
 
 // Decode Basic Auth Credentials 
@@ -66,9 +66,9 @@ const validateIP = async (requestIP, res) => {
 	}
 }
 
-const getRandomCaptcha = () => {
+const getRandomCaptcha = async () => {
 	try{
-		const files = fs.readdirSync('./CaptchaDataset');
+		const files = await fs.readdirSync('./CaptchaDataset');
 		
 		if (files.length === 0) {
 			throw new Error('No files found in Captcha directory.');
@@ -76,12 +76,16 @@ const getRandomCaptcha = () => {
 
 		const randomCaptcha = files[Math.floor(Math.random() * files.length)];
 		console.log("random captcha: ", randomCaptcha);
-		fs.readFile(randomCaptcha, (error, data) => {
-			if (error) { 
-				throw new Error('Captcha file could not be read. ', error);
-			}
-			return data;
-		})
+
+		const captchaPath = await path.join('./CaptchaDataset', randomCaptcha)
+
+		try {
+			const data = fs.readFileSync(captchaPath, 'base64'); // Read file as base64
+			return data
+
+		} catch (error) {
+			throw new Error('Captcha file could not be read. ', error);
+		}
 	} catch(error) {
 		console.error('Error reading directory: ', error);
 	}
@@ -103,15 +107,11 @@ const authWithCaptchaMiddleware = async (req, res, next) => {
 
 
 // GET request to serve login form
-app.get('/login', (req, res) => {
+app.get('/login', async (req, res) => {
 	try {	
-		const captchaData = getRandomCaptcha();
-
+		const captchaData = await getRandomCaptcha();
 		res.json({
-			username: '',
-			password: '',
 			captchaImage: captchaData,
-			captchaValue: '',
 		});
 	} catch (error) {
 		res.status(500).json({message: 'Internal Server Error.'})
@@ -119,10 +119,8 @@ app.get('/login', (req, res) => {
 });
 
 
-
 // Handle login POST request
 app.post('/login', authWithCaptchaMiddleware,(req, res) => {
-
   	// Simulated login check
   	if (username === VALID_USERNAME && password === VALID_PASSWORD) {
     	console.log(`Correct Password!`)
@@ -134,12 +132,8 @@ app.post('/login', authWithCaptchaMiddleware,(req, res) => {
   	console.log(res.statusCode)
 });
 
-// Catch-all route to serve the React frontend
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
-});
-
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {
+// app.listen(PORT, 'localhost', () => {
   console.log(`Server running at http://0.0.0.0:${PORT}`);
 });
