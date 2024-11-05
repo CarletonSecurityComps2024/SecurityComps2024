@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [captchaValue, setCaptchaValue] = useState<string>('');
+  const [captchaImage, setCaptchaImage] = useState<string>('');
   const [loginMessage, setLoginMessage] = useState<string>('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const response = await fetch('http://34.224.51.201:5050/login'); 
+            // const response = await fetch('http://localhost:5050/login'); 
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json(); 
+            setCaptchaImage(data.captchaImage);
+            console.log(data.captchaImage)
+        } catch (error) {
+          console.error('Fetching error:', error);
+        };
+      }
+    fetchData();
+  }, []); 
+
+
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -11,6 +33,7 @@ const Login: React.FC = () => {
     try {
       // Send a POST request to the backend server
       const response = await fetch('http://34.224.51.201:5050/login', {
+      // const response = await fetch(`http://localhost:5050/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,6 +73,17 @@ const Login: React.FC = () => {
             type="password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)} 
+          />
+        </div>
+        {captchaImage && ( 
+          <img src={`data:image/jpg;base64,${captchaImage}`} alt="Captcha" />
+        )}
+        <div>
+          <label>CAPTCHA: </label>
+          <input 
+            type="text" 
+            value={captchaValue}
+            onChange={(e) => setCaptchaValue(e.target.value)} 
           />
         </div>
         <button type="submit">Login</button>
