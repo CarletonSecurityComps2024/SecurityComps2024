@@ -41,21 +41,21 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const requestIP = req.ip;
 
-  try {
-    // Query to check if IP is in blocked_ips
-    const { rowCount } = await db.query(
-      'SELECT 1 FROM blocked_ips WHERE ip_address = $1',
-      [requestIP]
-    );
+try {
+	// Query to check if IP is in blocked_ips
+	const { rowCount } = await db.query(
+		'SELECT 1 FROM blocked_ips WHERE ip_address = $1',
+	[requestIP])
+	;
 
-    // If IP is found in blocked_ips, return an error
-    if (rowCount > 0) {
-      return res.status(403).json({ message: 'Access Denied' });
-    } 
-  } catch (error) {
-    console.error('Database query error: ', error);
-    res.status(500).json({message: 'Internal Server Error'});
-  }
+	// If IP is found in blocked_ips, return an error
+	if (rowCount > 0) {
+		return res.status(403).json({ message: 'Access Denied' });
+	} 
+} catch (error) {
+	console.error('Database query error: ', error);
+	res.status(500).json({message: 'Internal Server Error'});
+}
 
   handleNewIP(requestIP, res);
 
