@@ -76,13 +76,16 @@ const getRandomCaptcha = () => {
 
 		const randomCaptcha = files[Math.floor(Math.random() * files.length)];
 		console.log("random captcha: ", randomCaptcha);
-		return randomCaptcha;
+		fs.readFile(randomCaptcha, (error, data) => {
+			if (error) { 
+				throw new Error('Captcha file could not be read. ', error);
+			}
+			return data;
+		})
 	} catch(error) {
 		console.error('Error reading directory: ', error);
 	}
 }
-
-getRandomCaptcha();
 
 // Middleware for HTTP Basic Auth with CAPTCHA
 const authWithCaptchaMiddleware = async (req, res, next) => {
@@ -97,6 +100,24 @@ const authWithCaptchaMiddleware = async (req, res, next) => {
 	//
 
 }
+
+
+// GET request to serve login form
+app.get('/login', (req, res) => {
+	try {	
+		const captchaData = getRandomCaptcha();
+
+		res.json({
+			username: '',
+			password: '',
+			captchaImage: captchaData,
+			captchaValue: '',
+		});
+	} catch (error) {
+		res.status(500).json({message: 'Internal Server Error.'})
+	}
+});
+
 
 
 // Handle login POST request
