@@ -11,7 +11,7 @@ const Login: React.FC = () => {
     console.log('here'
     )
     try {
-      const response = await fetch('http://34.224.51.201:5050/login');
+      const response = await fetch('http://54.221.14.162:5050/login');
       // const response = await fetch('http://localhost:5050/login'); 
       const data = await response.json();
       setCaptchaImage(data.captchaImage);
@@ -23,7 +23,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const response = await fetch('http://34.224.51.201:5050/login');
+            const response = await fetch('http://54.221.14.162:5050/login');
             // const response = await fetch('http://localhost:5050/login'); 
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -45,7 +45,7 @@ const Login: React.FC = () => {
 
     try {
       // Send a POST request to the backend server
-      const response = await fetch('http://34.224.51.201:5050/login', {
+      const response = await fetch('http://54.221.14.162:5050/login', {
       // const response = await fetch(`http://localhost:5050/login`, {
         method: 'POST',
         headers: {
