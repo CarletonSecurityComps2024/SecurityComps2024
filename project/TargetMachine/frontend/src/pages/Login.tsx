@@ -7,11 +7,14 @@ const Login: React.FC = () => {
   const [captchaImage, setCaptchaImage] = useState<string>('');
   const [loginMessage, setLoginMessage] = useState<string>('');
 
-  const fetchCaptcha = async () => {
+  const fetchNewCaptcha = async () => {
+    console.log('here'
+    )
     try {
-      const response = await fetch('http://34.224.51.201:5050/captcha');
+      const response = await fetch('http://34.224.51.201:5050/login');
+      // const response = await fetch('http://localhost:5050/login'); 
       const data = await response.json();
-      setCaptchaImage(data.image);
+      setCaptchaImage(data.captchaImage);
     } catch (error) {
       console.error('Error fetching CAPTCHA: ', error);
     }
@@ -58,7 +61,7 @@ const Login: React.FC = () => {
         setLoginMessage('Login Success!');
       } else {
         setLoginMessage(data.message || 'Invalid Credentials');
-        fetchCaptcha(); // Fetch a new CAPTCHA on failure
+        fetchNewCaptcha(); // Fetch a new CAPTCHA on failure
       }
     } catch (error) {
       setLoginMessage('An error occurred');

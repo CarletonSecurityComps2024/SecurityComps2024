@@ -17,9 +17,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const VALID_USERNAME = 'admin';
-const VALID_PASSWORD = 'password;'
+const VALID_PASSWORD = 'password'
 const PORT = 5050;
 const IPCounts = {}
+
+let VALID_CAPTCHA;
+// let count = 0; // FOR TESTING PURPOSES
 
 const handleNewIP = async (ip, res) => {
 	if (IPCounts[ip]) {
@@ -49,6 +52,7 @@ const decodeCredentials = (authHeader) => {
 	return decodedCredentials.split(';');
 }
 
+// Check if IP address is blocked or not
 const validateIP = async (requestIP, res) => {
 	try {
 		// Query to check if IP is in blocked_ips
@@ -66,16 +70,18 @@ const validateIP = async (requestIP, res) => {
 	}
 }
 
+// Return a random CAPTCHA for log-in authentication
+// Return image as a base64 string
 const getRandomCaptcha = async () => {
 	try{
-		const files = await fs.readdirSync('./CaptchaDataset');
+		const files = await fs.readdirSync('./CaptchaDataset'); // Read files
 		
-		if (files.length === 0) {
+		if (files.length === 0) { // Check if dir is found
 			throw new Error('No files found in Captcha directory.');
 		}
 
-		const randomCaptcha = files[Math.floor(Math.random() * files.length)];
-		console.log("random captcha: ", randomCaptcha);
+		const randomCaptcha = files[Math.floor(Math.random() * files.length)]; // Select a random CAPTCHA img from dir.
+		VALID_CAPTCHA = randomCaptcha.split('.png')[0] // Value of selected CAPTCHA
 
 		const captchaPath = await path.join('./CaptchaDataset', randomCaptcha)
 
@@ -92,14 +98,25 @@ const getRandomCaptcha = async () => {
 }
 
 // FOR TESTING PURPOSES
-// Return the same CAPTCHA
+// Return controlled CAPTCHA
 const getConstCaptcha = async () => {
-	const captchaPath = './CaptchaDataset/1AASX.png'
+	let constCaptcha;
+	
+	// Return different CAPTCHA after page refresh
+	if (count == 2) {
+		constCaptcha = '1AJEB.png';
+	} else {
+		constCaptcha = '1AASX.png';
+		count = count + 1;
+	}
+
+	VALID_CAPTCHA = constCaptcha.split('.png')[0];
+
+	const captchaPath = path.join('./CaptchaDataset', constCaptcha);
 
 	try {
 		const data = fs.readFileSync(captchaPath, 'base64'); // Read file as base64
 		return data
-
 	} catch (error) {
 		throw new Error('Constant captcha file could not be read. ', error);
 	}
@@ -114,16 +131,14 @@ const getConstCaptcha = async () => {
 // 	// Check if address IP is blocked; Else, keep track to prevent spam requests
 // 	// validateIP(requestIP);
 // 	// handleNewIP(requestIP, res);
-	
-// 	//
 
 // }
 
 
 // GET request to serve login form
 app.get('/login', async (req, res) => {
-	try {	
-		const captchaData = await getConstCaptcha();
+	try {	// Respond with a random CAPTCHA on request
+		const captchaData = await getRandomCaptcha();
 		res.json({
 			captchaImage: captchaData,
 		});
@@ -137,11 +152,18 @@ app.get('/login', async (req, res) => {
 // app.post('/login', authWithCaptchaMiddleware,(req, res) => {
 app.post('/login', (req, res) => {
 
-  	// Simulated login check
-  	if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+	const { username, password, captchaValue } = req.body; // Filter out authentication values
+
+	// Authenticate with valid values
+  	if (username.trim() === VALID_USERNAME && 
+		password.trim() === VALID_PASSWORD && 
+		captchaValue.trim() === VALID_CAPTCHA) {
     	console.log(`Correct Password!`)
     	res.status(200).json({ message: 'Login Success!' });
-  	} else {
+  	} 
+	
+	// If authentication not valid
+	else {
     	console.log(`Status 401: Invalid Credentials`)
     	res.status(401).json({ message: 'Invalid Credentials' });
   	}
