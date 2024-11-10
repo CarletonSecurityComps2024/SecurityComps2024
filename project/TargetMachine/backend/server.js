@@ -106,18 +106,18 @@ const getConstCaptcha = async () => {
 }
 
 // Middleware for HTTP Basic Auth with CAPTCHA
-const authWithCaptchaMiddleware = async (req, res, next) => {
-	const authHeader = req.headers.authorization || '';
-	const [username, password] = decodeCredentials(authHeader);
-	const requestIP = req.ip;
+// const authWithCaptchaMiddleware = async (req, res, next) => {
+// 	const authHeader = req.headers.authorization || '';
+// 	const [username, password] = decodeCredentials(authHeader);
+// 	const requestIP = req.ip;
 	
-	// Check if address IP is blocked; Else, keep track to prevent spam requests
-	validateIP(requestIP);
-	handleNewIP(requestIP, res);
+// 	// Check if address IP is blocked; Else, keep track to prevent spam requests
+// 	// validateIP(requestIP);
+// 	// handleNewIP(requestIP, res);
 	
-	//
+// 	//
 
-}
+// }
 
 
 // GET request to serve login form
