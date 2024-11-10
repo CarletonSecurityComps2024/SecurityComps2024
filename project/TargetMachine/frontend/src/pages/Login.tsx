@@ -7,15 +7,25 @@ const Login: React.FC = () => {
   const [captchaImage, setCaptchaImage] = useState<string>('');
   const [loginMessage, setLoginMessage] = useState<string>('');
 
+  const fetchCaptcha = async () => {
+    try {
+      const response = await fetch('http://34.224.51.201:5050/captcha');
+      const data = await response.json();
+      setCaptchaImage(data.image);
+    } catch (error) {
+      console.error('Error fetching CAPTCHA: ', error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const response = await fetch('http://34.224.51.201:5050/login'); 
+            const response = await fetch('http://34.224.51.201:5050/login');
             // const response = await fetch('http://localhost:5050/login'); 
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            const data = await response.json(); 
+            const data = await response.json();
             setCaptchaImage(data.captchaImage);
             console.log(data.captchaImage)
         } catch (error) {
@@ -23,7 +33,7 @@ const Login: React.FC = () => {
         };
       }
     fetchData();
-  }, []); 
+  }, []);
 
 
 
@@ -38,7 +48,7 @@ const Login: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, captchaValue }),
       });
 
       const data = await response.json();
@@ -47,7 +57,8 @@ const Login: React.FC = () => {
       if (response.status === 200) {
         setLoginMessage('Login Success!');
       } else {
-        setLoginMessage('Invalid Credentials');
+        setLoginMessage(data.message || 'Invalid Credentials');
+        fetchCaptcha(); // Fetch a new CAPTCHA on failure
       }
     } catch (error) {
       setLoginMessage('An error occurred');
@@ -61,29 +72,29 @@ const Login: React.FC = () => {
       <form onSubmit={handleLogin}>
         <div>
           <label>Username: </label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)} 
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div>
           <label>Password: </label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)} 
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {captchaImage && ( 
+        {captchaImage && (
           <img src={`data:image/jpg;base64,${captchaImage}`} alt="Captcha" />
         )}
         <div>
           <label>CAPTCHA: </label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={captchaValue}
-            onChange={(e) => setCaptchaValue(e.target.value)} 
+            onChange={(e) => setCaptchaValue(e.target.value)}
           />
         </div>
         <button type="submit">Login</button>
