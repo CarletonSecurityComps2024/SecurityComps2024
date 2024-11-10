@@ -134,7 +134,9 @@ app.get('/login', async (req, res) => {
 
 
 // Handle login POST request
-app.post('/login', authWithCaptchaMiddleware,(req, res) => {
+// app.post('/login', authWithCaptchaMiddleware,(req, res) => {
+app.post('/login', (req, res) => {
+
   	// Simulated login check
   	if (username === VALID_USERNAME && password === VALID_PASSWORD) {
     	console.log(`Correct Password!`)
