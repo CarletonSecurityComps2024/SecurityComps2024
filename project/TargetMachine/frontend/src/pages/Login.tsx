@@ -8,8 +8,6 @@ const Login: React.FC = () => {
   const [loginMessage, setLoginMessage] = useState<string>('');
 
   const fetchNewCaptcha = async () => {
-    console.log('here'
-    )
     try {
       const response = await fetch('http://54.221.14.162:5050/login');
       // const response = await fetch('http://localhost:5050/login'); 
@@ -30,7 +28,6 @@ const Login: React.FC = () => {
             }
             const data = await response.json();
             setCaptchaImage(data.captchaImage);
-            console.log(data.captchaImage)
         } catch (error) {
           console.error('Fetching error:', error);
         };
@@ -55,7 +52,6 @@ const Login: React.FC = () => {
       });
 
       const data = await response.json();
-      console.log("Data: ", data);
 
       if (response.status === 200) {
         setLoginMessage('Login Success!');
