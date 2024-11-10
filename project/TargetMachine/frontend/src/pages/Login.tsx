@@ -6,10 +6,12 @@ const Login: React.FC = () => {
   const [captchaValue, setCaptchaValue] = useState<string>('');
   const [captchaImage, setCaptchaImage] = useState<string>('');
   const [loginMessage, setLoginMessage] = useState<string>('');
+  const IP = '54.234.124.97'
+  const PORT = 5050
 
   const fetchNewCaptcha = async () => {
     try {
-      const response = await fetch('http://54.221.14.162:5050/login');
+      const response = await fetch(`http://${IP}:${PORT}/login`);
       // const response = await fetch('http://localhost:5050/login'); 
       const data = await response.json();
       setCaptchaImage(data.captchaImage);
@@ -21,7 +23,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const response = await fetch('http://54.221.14.162:5050/login');
+            const response = await fetch(`http://${IP}:${PORT}/login`);
             // const response = await fetch('http://localhost:5050/login'); 
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -42,7 +44,7 @@ const Login: React.FC = () => {
 
     try {
       // Send a POST request to the backend server
-      const response = await fetch('http://54.221.14.162:5050/login', {
+      const response = await fetch(`http://${IP}:${PORT}/login`, {
       // const response = await fetch(`http://localhost:5050/login`, {
         method: 'POST',
         headers: {
