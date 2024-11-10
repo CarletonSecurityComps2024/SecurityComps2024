@@ -3,7 +3,7 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing import image
 from keras import layers
 from keras import ops
-from keras.saving import register_keras_serializable
+# from keras.saving import register_keras_serializable
 import numpy as np
 
 def ctc_batch_cost(y_true, y_pred, input_length, label_length):
@@ -55,7 +55,7 @@ def ctc_label_dense_to_sparse(labels, label_lengths):
     )
 
 # @keras.saving.register_keras_serializable()
-@register_keras_serializable()
+# @register_keras_serializable()
 class CTCLayer(layers.Layer):
     def __init__(self, name=None, **kwargs):
         super().__init__(name=name, **kwargs)
@@ -78,12 +78,8 @@ class CTCLayer(layers.Layer):
         return y_pred
     
     def compute_output_shape(self, input_shape):
-        # Output shape should match the shape of `y_pred`
-        return input_shape
-
-    def compute_output_spec(self, input_spec):
-        # This method ensures the output has the same dtype and shape as `y_pred`
-        return tf.TensorSpec(dtype=input_spec[1].dtype, shape=input_spec[1].shape)
+        # Specify all dimensions as None
+        return (None, None, None)
 
 def preprocess_image(img_path, target_size=(224, 224)):
     # Load the image and resize it
@@ -125,13 +121,45 @@ def ctc_decode(y_pred, input_length, greedy=True, beam_width=100, top_paths=1):
     return (decoded_dense, log_prob)
 
 # Load model
-# model = keras.models.load_model("./comps_CAPTCHA.keras", custom_objects={'CTCLayer': CTCLayer})
-model = keras.models.load_model("./comps_CAPTCHA.keras", custom_objects={"CTCLayer": CTCLayer})
+model = keras.models.load_model("./comps_CAPTCHA.keras", custom_objects={'CTCLayer': CTCLayer})
+# model = keras.models.load_model("./prediction_model_comps_CAPTCHA.keras")
 
 
-img_path = "./1AASX.png"
-preds = model.__call__(img_path)
-input_len = np.ones(preds.shape[0]) * preds.shape[1]
-pred_texts = ctc_decode(preds, input_len)
+img_path = "./1Aagu.jpg"
 
-print("This is the prediction: ", pred_texts)
+
+def encode_image(img_path, img_width=200, img_height=50):
+    # 1. Read image
+    img = tf.io.read_file(img_path)
+    # 2. Decode and convert to grayscale
+    img = tf.io.decode_png(img, channels=1)
+    # 3. Convert to float32 in [0, 1] range
+    img = tf.image.convert_image_dtype(img, tf.float32)
+    # 4. Resize to the desired size
+    img = ops.image.resize(img, [img_width, img_height])
+    # 5. Add batch dimension
+    img = tf.expand_dims(img, axis=0)
+    # 6. Return the processed image
+    return img
+
+characters = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+char_to_num = layers.StringLookup(vocabulary=list(characters), mask_token=None)
+num_to_char = layers.StringLookup(
+    vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True
+)
+
+encoded_img = encode_image(img_path)
+dummy_labels = np.zeros((1, 50), dtype=np.float32)
+print(dummy_labels)
+pred = model.predict([encoded_img, dummy_labels])
+input_len = np.ones(pred.shape[0]) * pred.shape[1]
+pred_text = ctc_decode(pred, input_len)[0][0][:, :5]
+output_text = tf.strings.reduce_join(num_to_char(pred_text)).numpy().decode("utf-8")
+
+print("This is the prediction: ", output_text)
+
+def main():
+    return "1Aagu"
+
+if __name__ == "__main__":
+    main()
