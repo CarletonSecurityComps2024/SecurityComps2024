@@ -91,6 +91,20 @@ const getRandomCaptcha = async () => {
 	}
 }
 
+// FOR TESTING PURPOSES
+// Return the same CAPTCHA
+const getConstCaptcha = async () => {
+	const captchaPath = './CaptchaDataset/1AASX.png'
+
+	try {
+		const data = fs.readFileSync(captchaPath, 'base64'); // Read file as base64
+		return data
+
+	} catch (error) {
+		throw new Error('Constant captcha file could not be read. ', error);
+	}
+}
+
 // Middleware for HTTP Basic Auth with CAPTCHA
 const authWithCaptchaMiddleware = async (req, res, next) => {
 	const authHeader = req.headers.authorization || '';
@@ -109,7 +123,7 @@ const authWithCaptchaMiddleware = async (req, res, next) => {
 // GET request to serve login form
 app.get('/login', async (req, res) => {
 	try {	
-		const captchaData = await getRandomCaptcha();
+		const captchaData = await getConstCaptcha();
 		res.json({
 			captchaImage: captchaData,
 		});
