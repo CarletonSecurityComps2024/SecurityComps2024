@@ -82,6 +82,8 @@ if __name__ == "__main__":
     usernames = read_usernames(username_file_path)
     passwords = read_passwords(password_file_path)
 
+    inputSize = len(usernames) * len(passwords)
+
     # FOR TEST PURPOSES
     # usernames = ['admin']
     # passwords = ['password']
