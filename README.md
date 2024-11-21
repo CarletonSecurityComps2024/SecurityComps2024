@@ -15,16 +15,20 @@ node server.js
 ### Step 2: Attacker Machine
 
 1. Clone the git repository into a folder: 
-```git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
+```bash
+git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
 ```
 2. Open the folder using VSCode. 
 3. Navigate to the spraying tool folder using the terminal: 
-```cd project/PasswordSprayingtool/
+```bash
+cd project/PasswordSprayingtool/
 ```
 4. Install dependencies:
-```pip install -r requirements.txt
+```bash
+pip install -r requirements.txt
 ```
 5. Start up the target machine [instruction above]
 6. Run the tool:
-```python3 password_spraying.py
+```bash
+python3 password_spraying.py
 ```
