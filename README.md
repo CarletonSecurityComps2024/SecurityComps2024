@@ -4,7 +4,7 @@
 
 ## How to run Password Spraying Tool
 
-### Step 1: Run Back End
+### Step 1: Target Machine
 
 ```bash
 cd TargetMachine/backend
@@ -12,17 +12,19 @@ npm install
 node server.js
 ```
 
-### Step 2: Run Front End
+### Step 2: Attacker Machine
 
-```bash
-cd TargetMachine/frontend
-npm install
-npm run dev
+1. Clone the git repository into a folder: 
+```git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
 ```
-
-### Step 3: Run Password Spraying
-
-```bash
-cd PasswordSprayingTool
-python3 PasswordSprayingTool/password_spraying.py
+2. Open the folder using VSCode. 
+3. Navigate to the spraying tool folder using the terminal: 
+```cd project/PasswordSprayingtool/
+```
+4. Install dependencies:
+```pip install -r requirements.txt
+```
+5. Start up the target machine [instruction above]
+6. Run the tool:
+```python3 password_spraying.py
 ```
