@@ -14,13 +14,13 @@ git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
 ```
 2. Install dependencies on the backend:
 ```bash
-cd project/TargetMachine/backend
+cd SecurityComps2024/project/TargetMachine/backend
 npm install
 ```
 
 3. (Optional) Install dependencies on the frontend to see what the log-in page looks like:
 ```bash
-cd project/TargetMachine/frontend
+cd SecurityComps2024/project/TargetMachine/frontend
 npm install
 ```
 
@@ -73,6 +73,8 @@ npm install
     5.5. Setup psql database
     ```bash
     sudo -u postgres psql
+    ```
+    ```bash
     CREATE USER comps_user WITH PASSWORD 'comps_password';
     CREATE DATABASE comps;
     GRANT ALL PRIVILEGES ON DATABASE comps TO comps_user;
@@ -102,7 +104,7 @@ git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
 2. Open the folder using VSCode. 
 3. Navigate to the spraying tool folder using the terminal: 
 ```bash
-cd project/PasswordSprayingtool/
+cd SecurityComps2024/project/PasswordSprayingtool/
 ```
 4. Install dependencies:
 ```bash
@@ -113,11 +115,11 @@ pip install -r requirements.txt
 
 1. On the target machine, run the following code to start the server:
 ```bash
-cd project/TargetMachine/backend
+cd SecurityComps2024/project/TargetMachine/backend
 npm start
 ```
 2. On the attacker machine, run the following code to run the tool:
 ```bash
-cd project/PasswordSprayingtool/
+cd SecurityComps2024/project/PasswordSprayingtool/
 python3 password_spraying.py
 ```
