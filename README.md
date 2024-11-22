@@ -132,14 +132,14 @@ cd SecurityComps2024/project/PasswordSprayingtool/
 pip install -r requirements.txt
 ```
 5. Add API credentials for proxy rotation. 
-    5.1. Sign up for a free account on [Webshare].(https://www.webshare.io/home-page)
-    ![Proxy API Instructions 1](./Instruction%20Images/Proxy1.png)
+    5.1. Sign up for a free account on [Webshare.](https://www.webshare.io/home-page)
+    ![Proxy API Instructions 1](./Instruction%20Images/Proxy1.jpg)
     5.2. After logging in, navigate to the Proxy List section in your dashboard.
-    ![Proxy API Instructions 2](./Instruction%20Images/Proxy2.png)
+    ![Proxy API Instructions 2](./Instruction%20Images/Proxy2.jpg)
     5.3. Click on the "Create API Key" button to generate a new key. You can assign a label to this key for easy identification.
-    ![Proxy API Instructions 3](./Instruction%20Images/Proxy3.png)
+    ![Proxy API Instructions 3](./Instruction%20Images/Proxy3.jpg)
     5.4. Go to Settings and retrieve API username and password.
-    ![Proxy API Instructions 4](./Instruction%20Images/Proxy4.png)
+    ![Proxy API Instructions 4](./Instruction%20Images/Proxy4.jpg)
     5.5. Relocate to the tool's folder.  
     ```bash
     cd SecurityComps2024/project/PasswordSprayingtool/
