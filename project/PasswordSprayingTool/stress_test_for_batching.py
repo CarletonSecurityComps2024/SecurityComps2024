@@ -145,8 +145,9 @@ if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Set file paths for usernames and passwords
-    username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top_1000_usernames.txt')
-    # password_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'password.txt')
+   
+
+    username_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'username.txt')
     password_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top_100_passwords.txt')
 
 
@@ -154,7 +155,7 @@ if __name__ == "__main__":
     usernames = read_usernames(username_file_path)
     passwords = read_passwords(password_file_path)
 
-    print(f"Total login attempts to make: {len(usernames) * len(passwords)}")
+    # print(f"Total login attempts to make: {len(usernames) * len(passwords)}")
 
     # Example usage:
     proxies_list = create_proxy(crawl_from_web=True)  # Set to False to load from file
