@@ -1,6 +1,11 @@
 # Multi-featured Approach to Crack HTTP Authentication
 
+### Authors: Duy (Dave) Nguyen & Kaung Thant (John) Win
+ 
 ## [Poster Link](https://www.canva.com/design/DAGU2-71zNA/bffINJa6wHMd0bibsoQkyQ/edit?utm_content=DAGU2-71zNA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+## Overview
+Although two-factor authentication (2FA) and multi-factor authentication (MFA) have become more widespread within the past few years, single-factor authentication (SFA) still continues to be the default authentication method for a number of websites. Among many, password spraying is a commonly used technique to break into such weak authentication systems. Our goal with this project is to demonstrate the effectiveness of such a tool against weak authentication systems and how an attacker can incorporate an Optical Character Recognition (OCR) model with password spraying to bypass text-based CAPTCHA systems in order to create a password-cracking tool. We hope to educate readers the need for “security in depth” as well as for stronger passwords.
 
 ## Set-up Instructions
 
