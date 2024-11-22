@@ -14,6 +14,8 @@ print("Starting...")
 # Set the correct target URL for the login endpoint on your backend
 # url = "http://localhost:5050/login"
 url = 'http://50.19.17.226:5050/login'
+url = 'http://54.234.124.97:5050/login'
+
 
 # Define Header
 headers = {
