@@ -1,8 +1,19 @@
 # Multi-featured Approach to Crack HTTP Authentication
 
-### Authors: Duy (Dave) Nguyen & Kaung Thant (John) Win
+### Authors
+|Name|Email|
+|----|-----|  
+|Duy (Dave) Nguyen|nguyend2@carleton.edu|
+|Kaung Thant (John) Win|winj@carleton.edu|
  
 ##  ![Poster - Final](./poster/Duy%20and%20John's%20Poster%20Final.png)
+
+## Contents
+- [Overview](#overview)
+- [Set-up Instructions](#set-up-instructions)
+- [Running Instructions](#running-instructions)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
 
 ## Overview
 Although two-factor authentication (2FA) and multi-factor authentication (MFA) have become more widespread within the past few years, single-factor authentication (SFA) still continues to be the default authentication method for a number of websites. Among many, password spraying is a commonly used technique to break into such weak authentication systems. Our goal with this project is to demonstrate the effectiveness of such a tool against weak authentication systems and how an attacker can incorporate an Optical Character Recognition (OCR) model with password spraying to bypass text-based CAPTCHA systems in order to create a password-cracking tool. We hope to educate readers the need for “security in depth” as well as for stronger passwords.
@@ -12,6 +23,8 @@ Although two-factor authentication (2FA) and multi-factor authentication (MFA) h
 ### Step 1: Target Machine
 
 There are two options for setting up the target machine (locally or on AWS [Amazon Web Services])
+- [Local Hosting Option](#local-hosting-option)
+- [AWS Hosting Option](#aws-hosting-option)
 
 #### Local hosting option
 1. Clone the git repository into a folder:
@@ -34,7 +47,7 @@ cd SecurityComps2024/project/TargetMachine/frontend
 npm install
 ```
 
-#### AWS Option
+#### AWS Hosting Option
 1. [Create/ Sign-in to your AWS account.](https://aws.amazon.com/ec2/)
 2. Create an EC2 Instance  
     2.1. Select "EC2" on the AWS dashboard. 
@@ -184,6 +197,10 @@ npm start
 cd SecurityComps2024/project/PasswordSprayingtool/
 python3 password_spraying.py
 ```
+
+## Acknowledgements
+
+We'd like to thank Professor Jeff Ondich for his support and guidance throughout the project. This project would not have been possible without him.
 
 ## References
 
