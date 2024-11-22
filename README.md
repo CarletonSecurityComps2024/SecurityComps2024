@@ -70,7 +70,7 @@ npm install
     sudo apt install npm -y
     sudo apt install postgresql -y
     ```  
-    5.5. Setup psql database
+    5.5. Setup postgres database.
     ```bash
     sudo -u postgres psql
     ```
@@ -78,9 +78,20 @@ npm install
     CREATE USER comps_user WITH PASSWORD 'comps_password';
     CREATE DATABASE comps;
     GRANT ALL PRIVILEGES ON DATABASE comps TO comps_user;
-    \q
     ```
-    5.6. Relocate to the target machine's backend folder.  
+    5.6. Once the "comps" database is set up, set up the "blocked_ips" table.
+    ```bash
+    \c comps
+    ```
+    ```bash
+    CREATE TABLE blocked_ips (
+    id SERIAL PRIMARY KEY,
+    ip_address INET NOT NULL,
+    log_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE blocked_ips TO comps_user;
+    ```
+    5.7. Relocate to the target machine's backend folder.  
     Add a ".env" file and copy-paste the following for the database:
     ```bash
     cd SecurityComps2024/project/TargetMachine/backend/
