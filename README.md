@@ -92,10 +92,10 @@ npm install
     GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE blocked_ips TO comps_user;
     ```
     5.7. Relocate to the target machine's backend folder.  
-    Add a ".env" file and copy-paste the following for the database:
     ```bash
     cd SecurityComps2024/project/TargetMachine/backend/
     ```
+    Create a ".env" file with the following:
     ```bash
     DB_USER=comps_user
     DB_HOST=localhost
@@ -103,7 +103,17 @@ npm install
     DB_PASSWORD=comps_password
     DB_PORT=5432
     ```
-
+6. Install dependencies.
+    6.1. Install dependencies on the backend:
+    ```bash
+    cd SecurityComps2024/project/TargetMachine/backend
+    npm install
+    ```
+    6.2. (Optional) Install dependencies on the frontend to see what the log-in page looks like:
+    ```bash
+    cd SecurityComps2024/project/TargetMachine/frontend
+    npm install
+    ```
 
 
 ### Step 2: Attacker Machine
@@ -121,6 +131,28 @@ cd SecurityComps2024/project/PasswordSprayingtool/
 ```bash
 pip install -r requirements.txt
 ```
+5. Add API credentials for proxy rotation. 
+    5.1. Sign up for a free account on [Webshare].(https://www.webshare.io/home-page)
+    ![Proxy API Instructions 1](./Instruction%20Images/Proxy1.png)
+    5.2. After logging in, navigate to the Proxy List section in your dashboard.
+    ![Proxy API Instructions 2](./Instruction%20Images/Proxy2.png)
+    5.3. Click on the "Create API Key" button to generate a new key. You can assign a label to this key for easy identification.
+    ![Proxy API Instructions 3](./Instruction%20Images/Proxy3.png)
+    5.4. Go to Settings and retrieve API username and password.
+    ![Proxy API Instructions 4](./Instruction%20Images/Proxy4.png)
+    5.5. Relocate to the tool's folder.  
+    ```bash
+    cd SecurityComps2024/project/PasswordSprayingtool/
+    ```
+    Add the API credentials in this format:
+    ```bash
+    APIFY_PROXY_HOSTNAME=proxy.apify.com
+    APIFY_PROXY_PORT=8000
+    APIFY_PROXY_PASSWORD=***add_password_here***
+    PROXY_API_KEY = ***add_api_key_here***
+    PROXY_API_USERNAME = ***add_api_username_here***
+    PROXY_API_PASSWORD = ***add_api_password_here***
+    ```
 
 ## Running Instructions 
 
