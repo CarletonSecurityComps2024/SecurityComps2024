@@ -7,7 +7,7 @@
 ### Step 1: Target Machine
 There are two options for setting up the target machine (locally or on AWS [Amazon Web Services])
 
-## Local hosting option
+#### Local hosting option
 1. Clone the git repository into a folder:
 ```bash
 git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
@@ -24,19 +24,41 @@ cd project/TargetMachine/frontend
 npm install
 ```
 
-## AWS Option
+#### AWS Option
 1. [Create/ Sign-in to your AWS account.](https://aws.amazon.com/ec2/)
 2. Create an EC2 Instance
-    2.1. Select EC2 on the AWS Console. 
+    2.1. Select "EC2" on the AWS dashboard. 
     ![AWS Instructions 1](./Instruction%20Images/AWS%20Instructions%201.png)
     2.2. Selecte "Launch an instance". 
-    ![AWS Instructions 1](./Instruction%20Images/AWS%20Instructions%202.png)
+    ![AWS Instructions 2](./Instruction%20Images/AWS%20Instructions%202.png)
     2.3. Name your instance and select "Ubuntu" for the OS Image.
-    ![AWS Instructions 1](./Instruction%20Images/AWS%20Instructions%203.png)
+    ![AWS Instructions 3](./Instruction%20Images/AWS%20Instructions%203.png)
     2.4. For "Key pair", select "Proceed without a key pair". For Network settings, tick the boxes for HTTP and HTTPS traffic. 
-    ![AWS Instructions 1](./Instruction%20Images/AWS%20Instructions%204.png)
+    ![AWS Instructions 4](./Instruction%20Images/AWS%20Instructions%204.png)
     2.5. Launch instance. 
-    ![AWS Instructions 1](./Instruction%20Images/AWS%20Instructions%205.png)
+    ![AWS Instructions 5](./Instruction%20Images/AWS%20Instructions%205.png)
+3. Edit Security Group 
+    3.1. Select "Security Groups" on the AWS dashboard. 
+    ![AWS Instructions 6](./Instruction%20Images/AWS%20Instructions%206.png)
+    3.2. Choose the new security group created (the name may be different from picture).
+    ![AWS Instructions 7](./Instruction%20Images/AWS%20Instructions%207.png)
+    3.3. Add new inbound rules so that new TCP protocol ports as shown in picture are accepted:.
+    ![AWS Instructions 8](./Instruction%20Images/AWS%20Instructions%208.png)
+4. Attach an elastic IP (so that the server's IP stays static). 
+    4.1. Select "Elastic IPs" on the AWS dashboard.
+    ![AWS Instructions 9](./Instruction%20Images/AWS%20Instructions%209.png)
+    4.2. Select "Allocate Elastic IP Address". 
+    ![AWS Instructions 10](./Instruction%20Images/AWS%20Instructions%2010.png)
+    4.3. Choose "Allocate" to finish allocation. 
+    ![AWS Instructions 11](./Instruction%20Images/AWS%20Instructions%2011.png)
+    4.4. Select the newly allocated IP address. Within "Actions" choose "Associate Elastic IP address". 
+    ![AWS Instructions 12](./Instruction%20Images/AWS%20Instructions%2012.png)
+    4.5. Choose the recently created EC2 instance. 
+    For private IP address, select whichever IP address is provided. 
+    Click "Associate" and your instance now has a static IP address!
+    ![AWS Instructions 13](./Instruction%20Images/AWS%20Instructions%2013.png)
+
+
 
 ### Step 2: Attacker Machine
 
