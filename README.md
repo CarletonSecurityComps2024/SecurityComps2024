@@ -10,20 +10,25 @@ Although two-factor authentication (2FA) and multi-factor authentication (MFA) h
 ## Set-up Instructions
 
 ### Step 1: Target Machine
+
 There are two options for setting up the target machine (locally or on AWS [Amazon Web Services])
 
 #### Local hosting option
 1. Clone the git repository into a folder:
+
 ```bash
 git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
 ```
+
 2. Install dependencies on the backend:
+
 ```bash
 cd SecurityComps2024/project/TargetMachine/backend
 npm install
 ```
 
 3. (Optional) Install dependencies on the frontend to see what the log-in page looks like:
+
 ```bash
 cd SecurityComps2024/project/TargetMachine/frontend
 npm install
@@ -123,16 +128,21 @@ npm install
 
 ### Step 2: Attacker Machine
 
-1. Clone the git repository into a folder: 
+1. Clone the git repository into a folder:
+
 ```bash
 git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
 ```
-2. Open the folder using VSCode. 
-3. Navigate to the spraying tool folder using the terminal: 
+
+2. Open the folder using VSCode.
+3. Navigate to the spraying tool folder using the terminal:
+
 ```bash
 cd SecurityComps2024/project/PasswordSprayingtool/
 ```
+
 4. Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -153,21 +163,35 @@ pip install -r requirements.txt
     ```bash
     APIFY_PROXY_HOSTNAME=proxy.apify.com
     APIFY_PROXY_PORT=8000
-    APIFY_PROXY_PASSWORD=***add_password_here***
+    APIFY_PROXY_PASSWORD=***add_apify_account_password_here***
     PROXY_API_KEY = ***add_api_key_here***
     PROXY_API_USERNAME = ***add_api_username_here***
     PROXY_API_PASSWORD = ***add_api_password_here***
     ```
 
-## Running Instructions 
+## Running Instructions
 
 1. On the target machine, run the following code to start the server:
+
 ```bash
 cd SecurityComps2024/project/TargetMachine/backend
 npm start
 ```
+
 2. On the attacker machine, run the following code to run the tool:
+
 ```bash
 cd SecurityComps2024/project/PasswordSprayingtool/
 python3 password_spraying.py
 ```
+
+## References
+
+1. Oxylabs, Roberta Aukstikalnyte, "What is proxy rotation and why is it important?", https://oxylabs.io/blog/rotate-proxies-python
+2. CrowdStrike, Bart Lenaerts-Bergmans, "Password Spraying", 2022, https://www.crowdstrike.com/en-us/cybersecurity-101/cyberattacks/password-spraying/,
+3. Splunk, Shanika Wickramasinghe, 2023, "Password Spraying Attacks: What You Need To Know To Prevent Attacks", https://www.splunk.com/en_us/blog/learn/password-spraying.html
+4. Semperis, Daniel Petri, 2024, "How to Defend Against a Password Spraying Attack, "https://www.semperis.com/blog/how-to-defend-against-password-spraying-attacks/
+5. AWS, "Amazon EC2", https://aws.amazon.com/ec2/
+6. AWS "Amazon EC2 Auto Scaling", https://aws.amazon.com/ec2/autoscaling/
+7. NetApps, "EC2 Autoscaling: The Basics, Getting Started, and 4 Best Practices", https://spot.io/resources/aws-autoscaling/ec2-autoscaling-the-basics-and-4-best-practices/
+8. Infura, "Python: How to perform batch requests with Infura", https://support.infura.io/building-with-infura/python/how-to-perform-batch-requests
