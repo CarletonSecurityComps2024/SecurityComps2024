@@ -230,14 +230,7 @@ def measure_performance_for_multithreading(num_threads):
 if __name__ == "__main__":
     # Get the directory of the current script
     base_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Build paths relative to the script's directory
-    # username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top-usernames.txt')
-    # password_file_path = os.path.join(base_dir, 'data', 'TestInput', 'rockyou-500.txt')
-
-    # username_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'username.txt')
-    # password_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'password.txt')
-
+   
     # Set file paths for usernames and passwords
     # username_file_path = os.path.join(base_dir, 'data', 'TestInput', 'top_1000_usernames.txt')
     username_file_path = os.path.join(base_dir, 'data', 'TestInputSmall', 'username.txt')
