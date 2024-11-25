@@ -160,8 +160,6 @@ def decode_batch_predictions(pred):
 
 def break_captcha(img):
     new_model = tf.keras.models.load_model('ocr_model.keras', custom_objects={'CTCLayer': CTCLayer})
-    img_path = "./1Aagu.jpg"
-    img_label = '1Aagu'
     data = tf.data.Dataset.from_tensor_slices(([img], [""]))
 
     processed_img = data.map(encode_single_sample).batch(1)

