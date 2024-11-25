@@ -150,7 +150,8 @@ app.post('/login', async (req, res) => {
 
 		// If IP is found in blocked_ips, return an error
 		if (rowCount > 0) {
-			return res.status(403).json({ message: 'Access Denied' });
+            console.log('403: Access Denied!');
+			return res.status(403).json({ message: 'Unauthorized' });
 		} 
 		} catch (error) {
 			console.error('Database query error: ', error);
@@ -164,12 +165,12 @@ handleNewIP(requestIP, res);
         if (
             username.trim() === VALID_USERNAME &&
             password.trim() === VALID_PASSWORD &&
-            captchaValue.trim() === VALID_CAPTCHA
+            captchaValue === VALID_CAPTCHA
         ) {
-            console.log('Login Success!');
+            console.log('200: Login Success!');
             return res.status(200).json({ message: 'Login Success!' });
         }
-        console.log('Invalid Credentials');
+        console.log('401: Invalid Credentials');
         res.status(401).json({ message: 'Invalid Credentials' });
     } catch (error) {
         console.error('Error during login:', error);
