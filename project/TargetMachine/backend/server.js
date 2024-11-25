@@ -3,7 +3,6 @@ const db = require('./database');
 const path = require('path');
 const cors = require('cors');
 const base64 = require('base-64');
-const axios = require('axios');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 
@@ -74,7 +73,7 @@ const validateIP = async (requestIP, res) => {
 // Return image as a base64 string
 const getRandomCaptcha = async () => {
 	try{
-		const files = await fs.readdirSync('./CaptchaDataset'); // Read files
+		const files = fs.readdirSync('./CaptchaDataset'); // Read files
 		
 		if (files.length === 0) { // Check if dir is found
 			throw new Error('No files found in Captcha directory.');
@@ -83,17 +82,17 @@ const getRandomCaptcha = async () => {
 		const randomCaptcha = files[Math.floor(Math.random() * files.length)]; // Select a random CAPTCHA img from dir.
 		VALID_CAPTCHA = randomCaptcha.split('.png')[0] // Value of selected CAPTCHA
 
-		const captchaPath = await path.join('./CaptchaDataset', randomCaptcha)
+		const captchaPath = path.join('./CaptchaDataset', randomCaptcha)
 
 		try {
 			const data = fs.readFileSync(captchaPath, 'base64'); // Read file as base64
 			return data
-
 		} catch (error) {
 			throw new Error('Captcha file could not be read. ', error);
 		}
 	} catch(error) {
 		console.error('Error reading directory: ', error);
+		throw error;
 	}
 }
 
@@ -122,18 +121,6 @@ const getConstCaptcha = async () => {
 	}
 }
 
-// Middleware for HTTP Basic Auth with CAPTCHA
-// const authWithCaptchaMiddleware = async (req, res, next) => {
-// 	const authHeader = req.headers.authorization || '';
-// 	const [username, password] = decodeCredentials(authHeader);
-// 	const requestIP = req.ip;
-	
-// 	// Check if address IP is blocked; Else, keep track to prevent spam requests
-// 	// validateIP(requestIP);
-// 	// handleNewIP(requestIP, res);
-
-// }
-
 
 // GET request to serve login form
 app.get('/login', async (req, res) => {
@@ -149,25 +136,45 @@ app.get('/login', async (req, res) => {
 
 
 // Handle login POST request
-// app.post('/login', authWithCaptchaMiddleware,(req, res) => {
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
 
 	const { username, password, captchaValue } = req.body; // Filter out authentication values
+	const requestIP = req.ip;
 
-	// Authenticate with valid values
-  	if (username.trim() === VALID_USERNAME && 
-		password.trim() === VALID_PASSWORD && 
-		captchaValue.trim() === VALID_CAPTCHA) {
-    	console.log(`Correct Password!`)
-    	res.status(200).json({ message: 'Login Success!' });
-  	} 
-	
-	// If authentication not valid
-	else {
-    	console.log(`Status 401: Invalid Credentials`)
-    	res.status(401).json({ message: 'Invalid Credentials' });
-  	}
-  	console.log(res.statusCode)
+	try {
+		// Query to check if IP is in blocked_ips
+		const { rowCount } = await db.query(
+			'SELECT 1 FROM blocked_ips WHERE ip_address = $1',
+			[requestIP]
+		);
+
+		// If IP is found in blocked_ips, return an error
+		if (rowCount > 0) {
+			return res.status(403).json({ message: 'Access Denied' });
+		} 
+		} catch (error) {
+			console.error('Database query error: ', error);
+			res.status(500).json({message: 'Internal Server Error'});
+	}
+
+handleNewIP(requestIP, res);
+
+	try {
+        // Authenticate user
+        if (
+            username.trim() === VALID_USERNAME &&
+            password.trim() === VALID_PASSWORD &&
+            captchaValue.trim() === VALID_CAPTCHA
+        ) {
+            console.log('Login Success!');
+            return res.status(200).json({ message: 'Login Success!' });
+        }
+        console.log('Invalid Credentials');
+        res.status(401).json({ message: 'Invalid Credentials' });
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 // Start the server
