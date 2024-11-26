@@ -20,6 +20,8 @@ Although two-factor authentication (2FA) and multi-factor authentication (MFA) h
 
 ## Set-up Instructions
 
+There are two ways to run the project: 1) without the OCR model for CAPTCHA translation, 2) with the OCR model. The only difference in set-up are the git clone instruction and the optional OCR model set-up steps. 
+
 ### Step 1: Target Machine
 
 There are two options for setting up the target machine (locally or on AWS [Amazon Web Services])
@@ -29,8 +31,13 @@ There are two options for setting up the target machine (locally or on AWS [Amaz
 #### Local hosting option
 1. Clone the git repository into a folder:
 
+- **Without OCR**
 ```bash
 git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
+```
+- **With OCR**
+```bash
+git clone -b read-respond-captcha https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
 ```
 
 2. Install dependencies on the backend:
@@ -143,8 +150,13 @@ npm install
 
 1. Clone the git repository into a folder:
 
+- **Without OCR**
 ```bash
 git clone https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
+```
+- **With OCR**
+```bash
+git clone -b read-respond-captcha https://github.com/CarletonSecurityComps2024/SecurityComps2024.git
 ```
 
 2. Open the folder using VSCode.
@@ -181,6 +193,8 @@ pip install -r requirements.txt
     PROXY_API_USERNAME = ***add_api_username_here***
     PROXY_API_PASSWORD = ***add_api_password_here***
     ```
+
+
 
 ## Running Instructions
 
