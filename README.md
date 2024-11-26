@@ -231,11 +231,22 @@ We'd like to thank Professor Jeff Ondich for his support and guidance throughout
 
 ## References
 
-1. Oxylabs, Roberta Aukstikalnyte, "What is proxy rotation and why is it important?", https://oxylabs.io/blog/rotate-proxies-python
-2. CrowdStrike, Bart Lenaerts-Bergmans, "Password Spraying", 2022, https://www.crowdstrike.com/en-us/cybersecurity-101/cyberattacks/password-spraying/,
-3. Splunk, Shanika Wickramasinghe, 2023, "Password Spraying Attacks: What You Need To Know To Prevent Attacks", https://www.splunk.com/en_us/blog/learn/password-spraying.html
-4. Semperis, Daniel Petri, 2024, "How to Defend Against a Password Spraying Attack, "https://www.semperis.com/blog/how-to-defend-against-password-spraying-attacks/
-5. AWS, "Amazon EC2", https://aws.amazon.com/ec2/
-6. AWS "Amazon EC2 Auto Scaling", https://aws.amazon.com/ec2/autoscaling/
-7. NetApps, "EC2 Autoscaling: The Basics, Getting Started, and 4 Best Practices", https://spot.io/resources/aws-autoscaling/ec2-autoscaling-the-basics-and-4-best-practices/
-8. Infura, "Python: How to perform batch requests with Infura", https://support.infura.io/building-with-infura/python/how-to-perform-batch-requests
+1. AWS, "Amazon EC2", https://aws.amazon.com/ec2/
+2. AWS "Amazon EC2 Auto Scaling", https://aws.amazon.com/ec2/autoscaling/
+3. Badhri Adhikari, “[DL] Some pitfalls to avoid when designing your own convolutional neural network,” YouTube, https://www.youtube.com/watch?v=eTUobNH5fj4
+4. Baoguang Shi, et. al. “An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition.” https://ar5iv.labs.arxiv.org/html/1507.05717
+5. CrowdStrike, Bart Lenaerts-Bergmans, "Password Spraying", 2022, https://www.crowdstrike.com/en-us/cybersecurity-101/cyberattacks/password-spraying/,
+6. Distill. “Sequence Modeling with CTC.” https://distill.pub/2017/ctc/
+7. Infura, "Python: How to perform batch requests with Infura", https://support.infura.io/building-with-infura/python/how-to-perform-batch-requests
+8. Keras - A_K_Nain. “OCR model for reading Captchas.” https://keras.io/examples/vision/captcha_ocr/
+9. mdn web docs. “HTTP Authentication.” https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
+10. NetApps, "EC2 Autoscaling: The Basics, Getting Started, and 4 Best Practices", https://spot.io/resources/aws-autoscaling/ec2-autoscaling-the-basics-and-4-best-practices/
+11. Oxylabs, Roberta Aukstikalnyte, "What is proxy rotation and why is it important?", https://oxylabs.io/blog/rotate-proxies-python
+12. Ping Wang, et al. “An Experimental Investigation of Text-based CAPTCHA Attacks and Their Robustness,” https://dl.acm.org/doi/10.1145/3559754
+13. Semperis, Daniel Petri, 2024, "How to Defend Against a Password Spraying Attack, "https://www.semperis.com/blog/how-to-defend-against-password-spraying-attacks/
+14. Splunk, Shanika Wickramasinghe, 2023, "Password Spraying Attacks: What You Need To Know To Prevent Attacks", https://www.splunk.com/en_us/blog/learn/password-spraying.html
+
+## Datasets
+
+1. Server Dataset: https://www.kaggle.com/datasets/greysky/captcha-dataset
+2. Training Dataset: https://www.kaggle.com/datasets/parsasam/captcha-dataset
