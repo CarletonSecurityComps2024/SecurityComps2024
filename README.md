@@ -194,7 +194,20 @@ pip install -r requirements.txt
     PROXY_API_PASSWORD = ***add_api_password_here***
     ```
 
+### Step 3: Training/ Setting up the OCR Model
 
+- **For ease of development, use a Linux-based system like WSL.**
+
+1. Create a [virtual environment](https://docs.python.org/3/library/venv.html) and start the environment.
+2. Install [tensorflow.](https://www.tensorflow.org/install/pip)
+3. Download the CAPTCHA dataset from [Kaggle](https://www.kaggle.com/datasets/parsasam/captcha-dataset) and place the folder containing the images inside this directory:
+```bash
+cd SecurityComps2024/project/OCRModel/
+```
+5. (If necessary) Rename the CAPTCHA image folder.
+6. Run `train_ocr_model.ipynb`.
+7. (If necessary) Install [Keras](https://keras.io/getting_started/) and make sure the Keras and Tensorflow versions are compatible. 
+7. (If necessary) Reopen the VSCode terminal in WSL.
 
 ## Running Instructions
 
