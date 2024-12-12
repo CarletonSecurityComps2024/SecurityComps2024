@@ -10,6 +10,7 @@
 
 ## Contents
 - [Overview](#overview)
+- [Detailed Project Explanation](#detailed-project-explanation)
 - [Set-up Instructions](#set-up-instructions)
 - [Running Instructions](#running-instructions)
 - [Acknowledgements](#acknowledgements)
@@ -17,6 +18,8 @@
 
 ## Overview
 Although two-factor authentication (2FA) and multi-factor authentication (MFA) have become more widespread within the past few years, single-factor authentication (SFA) still continues to be the default authentication method for a number of websites. Among many, password spraying is a commonly used technique to break into such weak authentication systems. Our goal with this project is to demonstrate the effectiveness of such a tool against weak authentication systems and how an attacker can incorporate an Optical Character Recognition (OCR) model with password spraying to bypass text-based CAPTCHA systems in order to create a password-cracking tool. We hope to educate readers the need for “security in depth” as well as for stronger passwords.
+
+## [Detailed Project Explanation](https://docs.google.com/document/d/1e3stXsyOBEXDM4qwkk1n5Xg9hKNrDz5HeQE5kl67yuQ/edit?tab=t.0)
 
 ## Set-up Instructions
 
