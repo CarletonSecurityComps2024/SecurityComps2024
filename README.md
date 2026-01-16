@@ -228,6 +228,14 @@ cd SecurityComps2024/project/PasswordSprayingtool/
 python3 password_spraying.py
 ```
 
+## Future Work 
+
+This project set out to illustrate the case for scalable attacks using free resources. However, there are two missing components with the current implementation. 
+
+The first is a scalable mechanism. In alignment with our project goals, we were able to demonstrate a multi-layered attack using free resources from AWS and WebShare. However, it currently lacks the mechanisms necessary to automatically and periodically refresh these free resources and expand them, in order to increase the likelihood of a successful penetration. 
+
+The second is the accuracy of the OCR model. The output model from the current neural network hovers around an average of 40% in terms of accurate predictions when faced with new CAPTCHA images of a similar type. An analysis and improvements over the current neural network structure will further allow the tool to reach its intended goal. 
+
 ## Acknowledgements
 
 We'd like to thank Professor Jeff Ondich for his support and guidance throughout the project. This project would not have been possible without him.
